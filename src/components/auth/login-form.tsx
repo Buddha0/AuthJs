@@ -1,0 +1,80 @@
+"use client"
+import CardWrapper from "./card-wrapper"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { LoginSchema } from "../../../schemas"
+import { Button } from "@/components/ui/button"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import {login} from "../../../actions/login"
+
+
+
+export default function LoginForm() {
+    async function onSubmit(values: z.infer<typeof LoginSchema>) {
+    const res = await login(values)
+    console.log(res)
+
+    }
+
+    const form = useForm<z.infer<typeof LoginSchema>>({
+        resolver: zodResolver(LoginSchema),
+        defaultValues: {
+         email:"",
+         password:""
+        },
+    })
+
+    return (
+        <>
+            <CardWrapper title="Login" linkToTitle="Dont have an Account?" linkHref="/register">
+
+                <Form {...form} >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 1">
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Email" {...field} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Password" {...field} type="password"/>
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                      
+                        <Button type="submit" className="w-full">Login</Button>
+                    </form>
+                </Form>
+
+            </CardWrapper>
+        </>
+    )
+}
